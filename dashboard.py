@@ -373,15 +373,18 @@ with tab2:
     st.plotly_chart(fig_bubble, use_container_width=True)
 
 with tab3:
-    pivot = df_ing_f.pivot_table(
-        index="Ingredients_List", columns="Internal_Type",
-        values="Jumlah", fill_value=0).astype(int)
+    pivot = df_ing_f.pivot_table(index="Ingredients_List", columns="Internal_Type",
+                                  values="Jumlah", fill_value=0).astype(int)
     pivot["Total"] = pivot.sum(axis=1)
     pivot = pivot.sort_values("Total", ascending=False).reset_index()
     fig_pivot = px.bar(
-        pivot, x="Ingredients_List", y=[c for c in pivot.columns if c not in ["Ingredients_List","Total"]],
+        pivot, x="Ingredients_List",
+        y=[c for c in pivot.columns if c not in ["Ingredients_List", "Total"]],
         color_discrete_map=PALETTE, barmode="group",
         labels={"Ingredients_List": "Bahan Aktif", "value": "Kemunculan", "variable": "Tipe Jerawat"},
+    )
+    fig_pivot.update_traces(
+        hovertemplate="<b>%{x}</b><br>Tipe: %{fullData.name}<br>Kemunculan: <b>%{y}</b><extra></extra>"
     )
     plotly_layout(fig_pivot, "Perbandingan Bahan Aktif per Tipe Jerawat", height=420)
     st.plotly_chart(fig_pivot, use_container_width=True)
